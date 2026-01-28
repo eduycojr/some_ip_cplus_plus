@@ -1,7 +1,7 @@
 #ifndef SOMEIP_CERTIFICATES_HPP
 #define SOMEIP_CERTIFICATES_HPP
 
-#include "types. hpp"
+#include "types.hpp"
 #include <memory>
 #include <string>
 #include <vector>

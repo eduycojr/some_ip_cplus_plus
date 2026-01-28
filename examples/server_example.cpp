@@ -4,52 +4,67 @@
 #include <thread>
 #include <chrono>
 #include <iostream>
+#include <csignal>
 
 using namespace someip;
 
+static volatile bool running = true;
+
+void signal_handler(int signum) {
+    std::cout << "\n[INFO] Caught signal " << signum << ", shutting down...\n";
+    running = false;
+}
+
 int main() {
-    // Create a UDP endpoint bound to 127.0.0.1:3000 and join SD multicast
-    auto endpoint = create_udp_endpoint("127.0.0.1", 3000, DEFAULT_SD_MULTICAST);
+    std::cout << "[INFO] Starting SOME/IP Server...\n";
+    std::cout.flush();
+
+    // Setup signal handler for clean shutdown
+    signal(SIGINT, signal_handler);
+
+    // Create a UDP endpoint bound to 127.0.0.1:3000
+    std::cout << "[INFO] Creating UDP endpoint on 127.0.0.1:3000...\n";
+    std::cout.flush();
+    
+    auto endpoint = create_udp_endpoint("127.0.0.1", 3000);
     if (!endpoint) {
-        std::cerr << "Failed to create UDP endpoint\n";
+        std::cerr << "[ERROR] Failed to create UDP endpoint\n";
+        std::cout << "Press Enter to exit...\n";
+        std::cin.get();
         return 1;
     }
+    std::cout << "[INFO] UDP endpoint created successfully.\n";
+    std::cout.flush();
 
     ServiceRegistry registry;
 
     // Register a simple echo method: returns payload back with E_OK
     registry.register_method(0x1234, 0x0123, [](const Payload& p, const Endpoint& src) -> MethodResult {
-        log_info("Server: method called, echoing payload");
+        std::cout << "[INFO] Server: method 0x0123 called, payload size=" << p.size() << ", echoing back\n";
+        std::cout.flush();
         return { ReturnCode::E_OK, p };
     });
+    std::cout << "[INFO] Registered method 0x0123 for service 0x1234\n";
+    std::cout.flush();
 
     // Message router that will send responses using the same UDP endpoint
     auto router = create_message_router(endpoint, registry);
 
     // Attach transport callback to router
     endpoint->set_callback([&router](const SomeIpMessage& msg, const Endpoint& src, const Endpoint& dst, TransportProtocol proto){
-        log_debug("Server received message: " + msg.header.to_string());
+        std::cout << "[DEBUG] Server received message: " << msg.header.to_string() << "\n";
+        std::cout.flush();
         router->route(msg, src, dst, proto);
     });
 
-    // Offer service via SD
-    auto sd = create_service_discovery();
-    if (sd) {
-        SdOffer offer;
-        offer.service_id = 0x1234;
-        offer.instance_id = 0x5678;
-        offer.ip = "127.0.0.1";
-        offer.port = 3000;
-        offer.ttl = 5;
-        sd->offer_service(offer);
-        sd->set_found_callback([](const SdOffer& o){
-            log_info("Server SD: found service " + std::to_string(o.service_id));
-        });
+    std::cout << "[INFO] Server running on 127.0.0.1:3000. Press Ctrl+C to exit.\n";
+    std::cout.flush();
+
+    // Keep running
+    while (running) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
-    log_info("Server running. Press Ctrl+C to exit.");
-    // Keep running
-    while (true) std::this_thread::sleep_for(std::chrono::seconds(1));
-
+    std::cout << "[INFO] Server stopped.\n";
     return 0;
 }

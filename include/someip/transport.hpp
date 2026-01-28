@@ -8,18 +8,23 @@
 #include <atomic>
 #include <mutex>
 #include <condition_variable>
-#include <sys/types.h>
 
 #ifdef _WIN32
+  #ifndef WIN32_LEAN_AND_MEAN
+    #define WIN32_LEAN_AND_MEAN
+  #endif
   #include <winsock2.h>
   #include <ws2tcpip.h>
   using socket_t = SOCKET;
+  using ssize_t = int;  // Windows doesn't have ssize_t
+  #define INVALID_SOCKET_VAL INVALID_SOCKET
 #else
+  #include <sys/types.h>
   #include <sys/socket.h>
   #include <arpa/inet.h>
   #include <unistd.h>
   using socket_t = int;
-  #define INVALID_SOCKET_FD (-1)
+  #define INVALID_SOCKET_VAL (-1)
 #endif
 
 namespace someip {
@@ -58,7 +63,7 @@ private:
 
     std::string bind_ip_;
     uint16_t bind_port_;
-    socket_t sock_ = INVALID_SOCKET_FD;
+    socket_t sock_ = INVALID_SOCKET_VAL;
     TransportCallback callback_;
     std::thread recv_thread_;
     std::atomic<bool> running_{false};

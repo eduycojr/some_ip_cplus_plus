@@ -45,7 +45,7 @@ enum class MessageType : uint8_t {
     REQUEST = 0x00,
     NOTIFICATION = 0x02,
     RESPONSE = 0x80,
-    ERROR = 0x81
+    ERR = 0x81
 };
 
 // Return codes (partial)

@@ -31,7 +31,7 @@ void MessageRouter::send_response(const SomeIpMessage& request, const MethodResu
     h.interface_version = request.header.interface_version;
     h.message_type = static_cast<uint8_t>(MessageType::RESPONSE);
     h.return_code = static_cast<uint8_t>(result.return_code);
-    h.length = (Uint32)(result.payload.size() + SomeIpHeader::MIN_LENGTH);
+    h.length = static_cast<Uint32>(result.payload.size() + SomeIpHeader::MIN_LENGTH);
     SomeIpMessage resp{h, result.payload};
     Payload out = resp.serialize();
     if (endpoint_) endpoint_->send_to(out, dest);
@@ -45,7 +45,7 @@ void MessageRouter::send_error(const SomeIpMessage& request, ReturnCode rc, cons
     h.session_id = request.header.session_id;
     h.protocol_version = request.header.protocol_version;
     h.interface_version = request.header.interface_version;
-    h.message_type = static_cast<uint8_t>(MessageType::ERROR);
+    h.message_type = static_cast<uint8_t>(MessageType::ERR);
     h.return_code = static_cast<uint8_t>(rc);
     h.length = SomeIpHeader::MIN_LENGTH;
     SomeIpMessage err{h, {}};
