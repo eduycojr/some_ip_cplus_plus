@@ -28,6 +28,14 @@ else()
     target_link_libraries(someip PUBLIC pthread)
 endif()
 
+# Add Client App
+add_executable(client_app examples/client_app.cpp)
+target_link_libraries(client_app PRIVATE someip)
+
+# Add Server App
+add_executable(server_app examples/server_app.cpp)
+target_link_libraries(server_app PRIVATE someip)
+
 # Examples
 add_executable(server_example examples/server_example.cpp)
 target_link_libraries(server_example PRIVATE someip)

@@ -1,4 +1,4 @@
-$buildDir = "C:\Users\eduardojr.yco\ws\some_ip_cplus_plus\build\Release"
+$buildDir = "..\..\build\Release"
 
 Write-Host "=== Running Unit Tests ===" -ForegroundColor Cyan
 
@@ -54,7 +54,7 @@ if ($null -ne $server) {
             Stop-Process -Id $server.Id -Force -ErrorAction SilentlyContinue
         }
     } else {
-        Write-Host "Process $($server.Id) not found — it may have already exited." -ForegroundColor Yellow
+        Write-Host "Process $($server.Id) not found   it may have already exited." -ForegroundColor Yellow
     }
 } else {
     Write-Warning "No server process object available to stop."
