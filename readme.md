@@ -144,29 +144,27 @@ This release includes the **Brake Control Demo** with the following updates:
 
 **Sample Client Console:**
 ```plaintext
-Enter brake command (press/release/status/exit): press
-[INFO] Brake press request sent successfully.
+[INFO] Client listening on port 3002.
 
-Enter brake command (press/release/status/exit): release
-[INFO] Brake release request sent successfully.
+Enter brake command (press/release/status/exit): press
+[INFO] Sent brake press request.
 
 Enter brake command (press/release/status/exit): status
-[INFO] Brake status request sent successfully.
+[INFO] Sent brake status request.
+
+Enter brake command (press/release/status/exit): release
+[INFO] Sent brake release request.
+
+Enter brake command (press/release/status/exit): exit
+[INFO] Client application terminated.
 ```
 
 **Sample Server Console:**
 ```plaintext
 [INFO] Server listening on port 3000.
-[INFO] Tail Light Service running.
-
-[INFO] Received request to press the brake.
-[INFO] Brake press confirmed.
-
-[INFO] Received request to release the brake.
-[INFO] Brake release confirmed.
-
-[INFO] Received request for brake status.
-[INFO] Brake currently pressed.
+[INFO] Server: Press Brake request received.
+[INFO] Server: Brake Status request received.
+[INFO] Server: Release Brake request received.
 ```
 
 ---
