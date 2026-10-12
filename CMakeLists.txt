@@ -43,6 +43,13 @@ target_link_libraries(server_example PRIVATE someip)
 add_executable(client_example examples/client_example.cpp)
 target_link_libraries(client_example PRIVATE someip)
 
+# Taillight standalone examples (WBS-2.6)
+add_executable(taillight_server_app examples/taillight_server_app.cpp)
+target_link_libraries(taillight_server_app PRIVATE someip)
+
+add_executable(taillight_client_app examples/taillight_client_app.cpp)
+target_link_libraries(taillight_client_app PRIVATE someip)
+
 # Tests
 add_executable(test_serialization tests/test_serialization.cpp)
 target_link_libraries(test_serialization PRIVATE someip)

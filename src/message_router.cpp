@@ -34,7 +34,9 @@ void MessageRouter::send_response(const SomeIpMessage& request, const MethodResu
     h.length = static_cast<Uint32>(result.payload.size() + SomeIpHeader::MIN_LENGTH);
     SomeIpMessage resp{h, result.payload};
     Payload out = resp.serialize();
-    if (endpoint_) endpoint_->send_to(out, dest);
+    // Copy shared_ptr to avoid data-race with concurrent reset
+    auto ep = endpoint_;
+    if (ep) ep->send_to(out, dest);
 }
 
 void MessageRouter::send_error(const SomeIpMessage& request, ReturnCode rc, const Endpoint& dest) {
@@ -45,12 +47,13 @@ void MessageRouter::send_error(const SomeIpMessage& request, ReturnCode rc, cons
     h.session_id = request.header.session_id;
     h.protocol_version = request.header.protocol_version;
     h.interface_version = request.header.interface_version;
-    h.message_type = static_cast<uint8_t>(MessageType::ERR);
+    h.message_type = static_cast<uint8_t>(MessageType::ERR); // Ensure canonical ERR (0x81)
     h.return_code = static_cast<uint8_t>(rc);
     h.length = SomeIpHeader::MIN_LENGTH;
     SomeIpMessage err{h, {}};
     Payload out = err.serialize();
-    if (endpoint_) endpoint_->send_to(out, dest);
+    auto ep = endpoint_;
+    if (ep) ep->send_to(out, dest);
 }
 
 } // namespace someip
