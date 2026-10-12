@@ -1,8 +1,33 @@
+# cmake_minimum_required(VERSION 3.10)
 cmake_minimum_required(VERSION 3.10)
 project(someip_cpp LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# --- Coverage / sanitizer options ---
+option(ENABLE_COVERAGE "Enable GCC/Clang code coverage flags" OFF)
+option(ENABLE_SANITIZERS "Enable ASan/UBSan/TSan flags (Clang recommended)" OFF)
+
+if(ENABLE_COVERAGE)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        message(STATUS "Enabling coverage flags")
+        add_compile_options(-O0 -g -fno-omit-frame-pointer --coverage)
+        add_link_options(--coverage)
+    else()
+        message(WARNING "Coverage requested but compiler is not GCC/Clang: ${CMAKE_CXX_COMPILER_ID}")
+    endif()
+endif()
+
+if(ENABLE_SANITIZERS)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        message(STATUS "Enabling sanitizer flags")
+        add_compile_options(-O1 -g -fno-omit-frame-pointer -fsanitize=address,undefined,thread)
+        add_link_options(-fsanitize=address,undefined,thread)
+    else()
+        message(WARNING "Sanitizers requested but compiler is not GCC/Clang: ${CMAKE_CXX_COMPILER_ID}")
+    endif()
+endif()
 
 # Suppress deprecated warnings for inet_addr on Windows
 if(WIN32)
@@ -56,6 +81,16 @@ target_link_libraries(test_serialization PRIVATE someip)
 
 add_executable(test_endtoend tests/test_endtoend.cpp)
 target_link_libraries(test_endtoend PRIVATE someip)
+
+# WBS 2.7 additional tests
+add_executable(test_message_router_error tests/test_message_router_error.cpp)
+target_link_libraries(test_message_router_error PRIVATE someip)
+
+add_executable(test_transport_retry_backoff tests/test_transport_retry_backoff.cpp)
+target_link_libraries(test_transport_retry_backoff PRIVATE someip)
+
+add_executable(test_transport_stress tests/test_transport_stress.cpp)
+target_link_libraries(test_transport_stress PRIVATE someip)
 
 # Install targets
 install(TARGETS someip DESTINATION lib)
