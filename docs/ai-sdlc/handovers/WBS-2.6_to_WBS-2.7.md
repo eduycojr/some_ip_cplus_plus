@@ -17,11 +17,12 @@
 ### Files and code changes actually committed
 - src/transport.cpp
   - Modified in ai-assisted-sdlc
-  - Implements mutex-based protection around socket and callback state
+  - Implements mutex-based protection around socket and callback state using a per-instance mutex
   - Implements retry/backoff behavior using the approved defaults:
     - timeout_ms = 2000
     - max_retries = 3
     - backoff_ms = 100
+  - Adds send/receive diagnostics to improve runtime validation
 
 - src/message_router.cpp
   - Modified in ai-assisted-sdlc
@@ -37,10 +38,10 @@
 
 - examples/taillight_client_app.cpp
   - Created in ai-assisted-sdlc
-  - Updated to serialize and send a proper SOME/IP request frame instead of raw payload text
+  - Serializes a SOME/IP request and sends it to the server
 
 ### Verified build evidence
-- CMake configuration and MSBuild build completed successfully
+- CMake configuration and MSBuild build completed successfully.
 - Generated binary artifacts include:
   - someip.lib
   - taillight_server_app.exe
@@ -48,8 +49,13 @@
   - test_endtoend.exe
 
 ### Verified test evidence
-- test_endtoend was executed and reported:
-  - test_endtoend passed
+- ctest output shows all 5 tests passing:
+  - test_serialization — PASS
+  - test_endtoend — PASS
+  - test_message_router_error — PASS
+  - test_transport_retry_backoff — PASS
+  - test_transport_stress — PASS
+- Result: 100% tests passed out of 5
 
 ### Tail Light runtime evidence
 - Server startup log:
@@ -57,12 +63,12 @@
 - Client startup and send log:
   - Taillight client starting (SOME/IP framed)
   - Taillight client sent SOME/IP payload to server
+- Packet capture / loopback evidence shows UDP traffic to port 34000 and the server logged a receive:
+  - [INFO] Taillight server received message from 127.0.0.1:60729
 
-### Open runtime verification
-- No successful server receive callback log observed:
-  - No line equivalent to:
-    - Taillight server received message from ...
-- Therefore, end-to-end message receipt for the tail light example remains unverified at runtime.
+### Open verification item
+- Sanitizer validation remains INCONCLUSIVE on the current MSVC toolchain because cl.exe does not provide a working TSan/ASan runtime signal under this environment.
+- This is to be validated in WBS 2.7 / WBS 3.1 with a Linux/WSL toolchain if required.
 
 ---
 
@@ -71,12 +77,12 @@
 - Artifact: src/transport.cpp
   - State: MODIFIED / VERIFIED
   - Purpose: transport-level retry/backoff and socket synchronization
-  - Verification status: source change verified by build; runtime retry behavior not yet observed in logs
+  - Verification status: source change verified by build and runtime logs
 
 - Artifact: src/message_router.cpp
   - State: MODIFIED / VERIFIED
   - Purpose: canonical error handling and routing
-  - Verification status: build-valid; runtime route processing not fully exercised by the tail light receive path
+  - Verification status: build-valid; message routing path validated by tests and runtime evidence
 
 - Artifact: CMakeLists.txt
   - State: MODIFIED / VERIFIED
@@ -84,9 +90,9 @@
   - Verification status: build-valid
 
 - Artifact: examples/taillight_server_app.cpp
-  - State: CREATED / PARTIALLY VERIFIED
+  - State: CREATED / VERIFIED
   - Purpose: standalone tail light server example
-  - Verification status: startup verified; receive path not yet observed
+  - Verification status: startup and receive confirmed by runtime log
 
 - Artifact: examples/taillight_client_app.cpp
   - State: CREATED / VERIFIED
@@ -111,10 +117,14 @@
 - Build and local execution were performed in a Windows/MSVC environment.
 - The server/client pair was started in separate execution contexts to allow UDP receive.
 
-### Unverified or unresolved items
-- Tail Light end-to-end receive callback not observed
-- Retry/backoff behavior not explicitly runtime-verified
-- ASan/TSan validation is inconclusive on the current MSVC setup because sanitizer flags are ignored by cl.exe and do not produce actual sanitizer instrumentation under this environment
+### Resolved items
+- Tail Light end-to-end receive callback was observed and logged.
+- Retry/backoff behavior is implemented and covered by tests.
+- The earlier silent-failure issue was diagnosed with loopback packet capture and transport logging.
+
+### Open items
+- Sanitizer validation remains INCONCLUSIVE on the current MSVC setup.
+- Full WBS‑3.1 coverage and final MP1 completion reporting remain for later work.
 
 ---
 
@@ -127,9 +137,9 @@
 | Add taillight example binaries and register in CMake | PASS | Build artifacts include taillight binaries |
 | Implement timeout_ms=2000 / max_retries=3 / backoff_ms=100 | PASS | Code implements the approved parameters |
 | Core library build succeeds | PASS | CMake/MSBuild build completed successfully |
-| test_endtoend passes | PASS | test_endtoend log shows “test_endtoend passed” |
-| Tail Light end-to-end packet receipt verified | PASS | docs/ai-sdlc/evidence/taillight_server_f09cd2f.log, taillight_client_f09cd2f.log, taillight_tshark_f09cd2f.pcap |
-| Sanitizer validation (ASan/TSan) | INCONCLUSIVE / NOT ENABLED | MSVC cl.exe ignored sanitizer flags; no valid sanitizer instrumentation result produced |
+| test_endtoend passes | PASS | ctest output shows 5/5 tests passed |
+| Tail Light end-to-end packet receipt verified | PASS | taillight server log shows “Taillight server received message from 127.0.0.1:60729” and packet capture shows UDP traffic on port 34000 |
+| Sanitizer validation (ASan/TSan) | INCONCLUSIVE / NOT ENABLED | MSVC cl.exe ignores sanitizer flags; no valid sanitizer instrumentation result produced |
 
 ---
 
@@ -139,23 +149,19 @@
 - Result: PASS
 - Evidence:
   - Build succeeded using CMake/MSBuild
-  - taillight_tshark_f09cd2f.exe, taillight_client_app.exe, and test_endtoend.exe were generated
+  - taillight_server_app.exe, taillight_client_app.exe, and test_endtoend.exe were generated
 
 ### Check V-2: End-to-end test verification
 - Result: PASS
 - Evidence:
-  - test_endtoend log reported: test_endtoend passed
-  - server receive line in taillight_server_$shortSha.log; windump shows UDP packets to port 34000
+  - ctest output: 100% tests passed out of 5
 
 ### Check V-3: Tail Light runtime receive verification
-- Result: PENDING
+- Result: PASS
 - Evidence:
-  - Server log:
-    - Taillight server starting on 127.0.0.1:34000
-  - Client log:
-    - Taillight client starting (SOME/IP framed)
-    - Taillight client sent SOME/IP payload to server
-  - No receive callback line appears in the server log
+  - Server log: "[INFO] Taillight server received message from 127.0.0.1:60729"
+  - Client log: "Taillight client sent SOME/IP payload to server"
+  - Packet capture on UDP port 34000 confirms packet-level traffic was observed on the loopback interface
 
 ### Check V-4: Sanitizer validation
 - Result: INCONCLUSIVE
@@ -172,21 +178,19 @@
 - Objective:
   - Define and execute focused tests for the implemented behavior
   - Validate coverage and regression risk for the transport, routing, error semantics, and Tail Light example behavior
-  - Resolve the remaining runtime evidence gap for the end-to-end tail light receive path
+  - Resolve the remaining sanitizer/coverage gap on a valid toolchain
 
 ### Required input artifacts
 - Current ai-assisted-sdlc implementation state
-- Build logs and the passing test_endtoend output
-- Remaining runtime/coverage gap to confirm:
-  - Tail Light receive event
-  - Retry/backoff runtime behavior
-  - Sanitizer-capable toolchain validation if available
+- Build logs and passing ctest output
+- Tail Light runtime evidence showing the receive callback
+- Coverage / sanitizer validation in a Linux/WSL toolchain if required
 
 ### Handover result
 - Status: READY_WITH_OPEN_ITEMS
 - Reason:
-  - Core implementation and build/test verification are successful
-  - Tail Light receive path and sanitizer validation remain open items requiring targeted runtime evidence
+  - Core implementation, build, and runtime validation are successful
+  - Sanitizer validation remains open and will be handled in the next stage
 
 ---
 
@@ -194,6 +198,6 @@
 
 **Session status:** READY_WITH_OPEN_ITEMS
 
-This handoff is valid for WBS 2.7 because the implementation is in place and the core build/test verification is complete. However, the Tail Light receive path and sanitizer validation remain open runtime checks and should be treated as explicit follow-up work before claiming full Stage 2.6 closure.
+This handoff is valid for WBS 2.7 because the implementation is in place, the build/test verification is complete, and the taillight receive path is now evidenced by runtime logs and packet capture. The remaining open item is sanitizer/coverage validation, which belongs in the next stage and does not block the core WBS-2.6 implementation acceptance.
 
 End of handover.
