@@ -92,6 +92,26 @@ target_link_libraries(test_transport_retry_backoff PRIVATE someip)
 add_executable(test_transport_stress tests/test_transport_stress.cpp)
 target_link_libraries(test_transport_stress PRIVATE someip)
 
+# Register tests with CTest so `ctest` discovers them
+enable_testing()
+
+# Unit / integration tests
+if(TARGET test_serialization)
+  add_test(NAME test_serialization COMMAND $<TARGET_FILE:test_serialization>)
+endif()
+if(TARGET test_endtoend)
+  add_test(NAME test_endtoend COMMAND $<TARGET_FILE:test_endtoend>)
+endif()
+if(TARGET test_message_router_error)
+  add_test(NAME test_message_router_error COMMAND $<TARGET_FILE:test_message_router_error>)
+endif()
+if(TARGET test_transport_retry_backoff)
+  add_test(NAME test_transport_retry_backoff COMMAND $<TARGET_FILE:test_transport_retry_backoff>)
+endif()
+if(TARGET test_transport_stress)
+  add_test(NAME test_transport_stress COMMAND $<TARGET_FILE:test_transport_stress>)
+endif()
+
 # Install targets
 install(TARGETS someip DESTINATION lib)
 install(DIRECTORY include/ DESTINATION include)
