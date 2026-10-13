@@ -12,6 +12,11 @@ artifacts:
     commit: 967d26844de8e5e9b215fdec520c7cc321c824aa
     status: ready_with_open_items
     approver: null
+  - id: wbs_2_4_implementation_plan
+    path: docs/ai-sdlc/plans/Plan_v2.md
+    commit: null
+    status: draft
+    approver: null
   - id: wbs_2_5_handover
     path: docs/ai-sdlc/handovers/WBS-2.5_to_WBS-2.6.md
     commit: 9f58850271f6d922ba913acb0c434077b1f038ea
