@@ -1,0 +1,21 @@
+# MP1 task mapping for telemetry and metrics
+# Populate entries for each MP1 task so telemetry can compute cycle-times.
+
+- mp1_task: WBS-2.5-DESIGN
+  pr: null
+  commit_start: null
+  commit_done: null
+  session_id: S20261011-W2-01
+  start_event: session_start
+  done_event: handover_commit
+  owner: '@eduycojr'
+
+# Example template entry:
+# - mp1_task: WBS-2.6-IMPLEMENT
+#   pr: 42
+#   commit_start: f11a543...
+#   commit_done: c2475f1...
+#   session_id: S20261012-W2-01
+#   start_event: PR_opened
+#   done_event: handover_commit
+#   owner: '@owner'

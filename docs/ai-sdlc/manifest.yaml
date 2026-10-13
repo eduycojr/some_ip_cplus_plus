@@ -1,0 +1,26 @@
+manifest_version: 1
+project: some_ip_cplus_plus
+last_updated: 2026-10-13T00:00:00Z
+artifacts:
+  - id: wbs_2_5_handover
+    path: docs/ai-sdlc/handovers/WBS-2.5_to_WBS-2.6.md
+    commit: 9f58850271f6d922ba913acb0c434077b1f038ea
+    status: closed_with_open_items
+    approver: null
+  - id: wbs_2_6_handover
+    path: docs/ai-sdlc/handovers/WBS-2.6_to_WBS-2.7.md
+    commit: 4756711feb06a6f5af5e5cce26076672b3136463
+    status: closed_with_open_items
+    approver: null
+  - id: wbs_2_7_handover
+    path: docs/ai-sdlc/handovers/WBS-2.7_to_WBS-2.8.md
+    commit: c2475f19e1bea3a284d7c01dd0b16d755044f937
+    status: ready_with_open_items
+    approver: null
+  - id: w2_telemetry
+    path: docs/ai-sdlc/evidence/W2_telemetry_WBS-2.8.md
+    commit: 14d3d6006639192320d4bc20ce3db48ffccf0fa8
+    status: draft
+learning_loops: docs/ai-sdlc/evidence/W2_learning_loops.md
+telemetry:
+  mp1_task_map: docs/ai-sdlc/telemetry/mp1_task_map.yaml
