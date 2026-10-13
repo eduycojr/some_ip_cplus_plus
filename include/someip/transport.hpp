@@ -67,6 +67,8 @@ private:
     TransportCallback callback_;
     std::thread recv_thread_;
     std::atomic<bool> running_{false};
+    // Per-instance mutex to protect socket and callback state (replaces previous global mutex)
+    std::mutex mutex_;
 };
 
 } // namespace someip
