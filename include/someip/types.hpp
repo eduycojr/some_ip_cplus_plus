@@ -8,6 +8,7 @@
 #include <tuple>
 #include <chrono>
 #include <optional>
+#include <cstdio>
 
 namespace someip {
 
@@ -67,6 +68,7 @@ using MethodHandler = std::function<MethodResult(const Payload&, const Endpoint&
 // Simple logging helper
 inline void log_info(const std::string& s) { fprintf(stdout, "[INFO] %s\n", s.c_str()); }
 inline void log_debug(const std::string& s) { fprintf(stdout, "[DEBUG] %s\n", s.c_str()); }
+inline void log_warn(const std::string& s) { fprintf(stdout, "[WARN] %s\n", s.c_str()); }
 inline void log_error(const std::string& s) { fprintf(stderr, "[ERROR] %s\n", s.c_str()); }
 
 // SOME/IP SD defaults
