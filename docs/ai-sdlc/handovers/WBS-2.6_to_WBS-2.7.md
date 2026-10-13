@@ -128,7 +128,7 @@
 | Implement timeout_ms=2000 / max_retries=3 / backoff_ms=100 | PASS | Code implements the approved parameters |
 | Core library build succeeds | PASS | CMake/MSBuild build completed successfully |
 | test_endtoend passes | PASS | test_endtoend log shows “test_endtoend passed” |
-| Tail Light end-to-end packet receipt verified | PENDING | Server callback not observed in runtime log |
+| Tail Light end-to-end packet receipt verified | PASS | docs/ai-sdlc/evidence/taillight_server_f09cd2f.log, taillight_client_f09cd2f.log, taillight_tshark_f09cd2f.pcap |
 | Sanitizer validation (ASan/TSan) | INCONCLUSIVE / NOT ENABLED | MSVC cl.exe ignored sanitizer flags; no valid sanitizer instrumentation result produced |
 
 ---
@@ -139,12 +139,13 @@
 - Result: PASS
 - Evidence:
   - Build succeeded using CMake/MSBuild
-  - taillight_server_app.exe, taillight_client_app.exe, and test_endtoend.exe were generated
+  - taillight_tshark_f09cd2f.exe, taillight_client_app.exe, and test_endtoend.exe were generated
 
 ### Check V-2: End-to-end test verification
 - Result: PASS
 - Evidence:
   - test_endtoend log reported: test_endtoend passed
+  - server receive line in taillight_server_$shortSha.log; windump shows UDP packets to port 34000
 
 ### Check V-3: Tail Light runtime receive verification
 - Result: PENDING
