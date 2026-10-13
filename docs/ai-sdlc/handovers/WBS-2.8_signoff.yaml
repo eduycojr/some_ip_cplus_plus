@@ -1,0 +1,17 @@
+wbs: "2.8"
+status: "CLOSED_CONDITIONAL"
+approver: "wanawok"
+role: "Project Lead"
+date: "2026-10-13"
+notes: |
+  WBS-2.8 (MP1 Completion Review) has been closed conditionally.
+  Implementation and runtime validation in the standard (non-sanitized) build path are complete and committed.
+  Remaining open validation items (sanitizer hang in ASan test_endtoend; coverage artifacts missing; AI-tests gap review) are documented in the WBS-2.8 handover and tracked as follow-ups.
+  This sign-off acknowledges conditional acceptance of MP1 so the project may proceed to WBS-3.1. The open items must be resolved or explicitly documented as INCONCLUSIVE in the project evidence before the final release gate.
+acceptance_conditions:
+  - "Sanitizer evidence: PASS or INCONCLUSIVE with reproducible logs and mitigation plan (docs/ai-sdlc/evidence/sanitizer_asan.log or equivalent)."
+  - "Coverage evidence: coverage HTML and summary committed under docs/ai-sdlc/evidence/coverage*.html"
+  - "AI tests review: docs/ai-sdlc/evidence/tests_AI_missed.md created and linked to test changes or rationale for deferral."
+related_artifacts:
+  - "docs/ai-sdlc/handovers/WBS-2.8_to_WBS-2.9.md"
+  - "docs/ai-sdlc/evidence/* (to be populated)"
