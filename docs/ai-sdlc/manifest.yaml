@@ -5,8 +5,8 @@ artifacts:
   - id: w2_2_requirement_decomp
     path: docs/ai-sdlc/evidence/W2-2.2_Requirement_Decomposition_Examples.md
     commit: cf531ef7cdc3af2352d7fc392e03436f789e40a0
-    status: waiting_for_approval
-    approver: null
+    status: approved
+    approver: @eduycojr
   - id: wbs_2_5_handover
     path: docs/ai-sdlc/handovers/WBS-2.5_to_WBS-2.6.md
     commit: 9f58850271f6d922ba913acb0c434077b1f038ea
