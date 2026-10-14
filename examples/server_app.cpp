@@ -1,6 +1,7 @@
 #include "someip/api.hpp"
 #include "someip/service.hpp"
 #include "someip/message_router.hpp" 
+#include <atomic>
 #include <iostream>
 
 using namespace someip;
@@ -25,13 +26,14 @@ MethodResult release_brake(const Payload&, const Endpoint&) {
 
 // Handler for querying brake status
 MethodResult brake_status(const Payload&, const Endpoint&) {
-    static bool brake_pressed = true; // For simulation, toggling every call
-    brake_pressed = !brake_pressed;
+    static std::atomic<bool> brake_pressed{true};
+    const bool new_state = !brake_pressed.load(std::memory_order_relaxed);
+    brake_pressed.store(new_state, std::memory_order_relaxed);
 
     std::cout << "[INFO] Server: Brake Status request received.\n";
     MethodResult result;
     result.return_code = ReturnCode::E_OK;  // Success
-    result.payload = {brake_pressed ? true : false}; // Return current brake status
+    result.payload = {static_cast<uint8_t>(brake_pressed.load(std::memory_order_relaxed) ? 1u : 0u)};
     return result;
 }
 
