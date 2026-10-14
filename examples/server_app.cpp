@@ -6,8 +6,13 @@
 
 using namespace someip;
 
+namespace {
+std::atomic<bool> g_brake_pressed{false};
+}
+
 // Handler for pressing the brake
 MethodResult press_brake(const Payload&, const Endpoint&) {
+    g_brake_pressed.store(true, std::memory_order_relaxed);
     std::cout << "[INFO] Server: Press Brake request received.\n";
     MethodResult result;
     result.return_code = ReturnCode::E_OK;  // Success
@@ -17,6 +22,7 @@ MethodResult press_brake(const Payload&, const Endpoint&) {
 
 // Handler for releasing the brake
 MethodResult release_brake(const Payload&, const Endpoint&) {
+    g_brake_pressed.store(false, std::memory_order_relaxed);
     std::cout << "[INFO] Server: Release Brake request received.\n";
     MethodResult result;
     result.return_code = ReturnCode::E_OK;  // Success
@@ -26,14 +32,11 @@ MethodResult release_brake(const Payload&, const Endpoint&) {
 
 // Handler for querying brake status
 MethodResult brake_status(const Payload&, const Endpoint&) {
-    static std::atomic<bool> brake_pressed{true};
-    const bool new_state = !brake_pressed.load(std::memory_order_relaxed);
-    brake_pressed.store(new_state, std::memory_order_relaxed);
-
+    const bool status = g_brake_pressed.load(std::memory_order_relaxed);
     std::cout << "[INFO] Server: Brake Status request received.\n";
     MethodResult result;
     result.return_code = ReturnCode::E_OK;  // Success
-    result.payload = {static_cast<uint8_t>(brake_pressed.load(std::memory_order_relaxed) ? 1u : 0u)};
+    result.payload = {static_cast<uint8_t>(status ? 1u : 0u)};
     return result;
 }
 
