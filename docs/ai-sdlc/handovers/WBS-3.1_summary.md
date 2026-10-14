@@ -1,0 +1,93 @@
+# AI-assisted SDLC Handover Record
+
+- **WBS/task ID:** WBS-3.1
+- **Stage number/name:** Stage 6 / Implement
+- **Prompt IDs and prompt versions:** P06 (primary implement prompt), P18 (optional risk-scoping lens, not required)
+- **Repository / branch / commit SHA:** eduycojr/some_ip_cplus_plus / ai-assisted-sdlc / 7107085
+- **Input artifact paths/issue links:**
+  - docs/ai-sdlc/handovers/WBS-2.6_to_WBS-2.7.md
+  - docs/ai-sdlc/handovers/WBS-2.7_to_WBS-2.8.md
+  - docs/ai-sdlc/handovers/WBS-2.8_to_WBS-2.9.md
+  - docs/ai-sdlc/WORKFLOW_MODEL_v1.md
+  - docs/ai-sdlc/PROMPT_ROUTER.md
+  - Issue-01 / Issue-02 / Issue-03 as tracked in the MP1 implementation handoff
+- **Inputs supplied:**
+  - MP1 remaining scope and defect fix requirement
+  - repo conventions requirement: code should be easy to review without the author present
+  - explicit requirement to keep the patch narrow and aligned to the repository’s current conventions
+- **Confirmed facts (with evidence):**
+  - The remaining runtime race in examples/server_app.cpp was fixed by replacing the non-thread-safe static state with atomic state.
+  - The code and test artifacts were built locally and logs were captured in docs/ai-sdlc/evidence/.
+  - The retry/backoff path was exercised and the targeted transport test recorded a PASS result with the expected retry behavior:
+    - send_to result=false after three attempts
+    - PASS: retry/backoff path fails after retries and observes expected backoff delay
+  - Sanitizer and coverage remain INCONCLUSIVE on the current Windows environment; the recorded limitation is toolchain-related, not a code-level defect.
+- **Inferences / assumptions:**
+  - The remaining MP1 implementation work is functionally complete based on local build/test evidence.
+  - The remaining verification gap is environmental (Windows toolchain limitations on sanitizer/coverage), not an unresolved functional defect.
+  - This handover is intended to allow continuation into WBS-3.2 for final verification, reviewer sign-off, and the remaining Linux/WSL or CI validation for sanitizer/coverage.
+- **Unknowns / blockers:**
+  - Full sanitizer/coverage validation on the supported Linux/WSL toolchain is still pending.
+  - Final reviewer sign-off and timestamp are still pending.
+  - Any additional repo-level lint/formatter configuration outside the current local build/test pass is not yet independently confirmed.
+- **AI output / proposed artifacts:**
+  - Scoped code fix in examples/server_app.cpp
+  - Local evidence logs in docs/ai-sdlc/evidence/
+  - Handover summary artifact for WBS-3.1
+- **Files/diff affected (actual vs proposed):**
+  - Actual:
+    - examples/server_app.cpp
+  - Proposed / intentionally kept out of scope:
+    - no public API churn
+    - no broad refactor beyond the minimal fix
+    - no unrelated feature expansion
+- **Commands actually executed / environment:**
+  - Windows 11 local environment
+  - Build:
+    - cmake .. -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Release
+    - cmake --build . --config Release
+  - Test execution:
+    - ctest -C Release --output-on-failure
+    - .\Release\test_transport_retry_backoff.exe
+    - .\Release\test_message_router_error.exe
+    - .\Release\test_transport_stress.exe
+    - .\Release\test_endtoend.exe
+  - Example validation:
+    - server_app.exe
+    - client_app.exe
+    - taillight_server_app.exe / taillight_client_app.exe (if in scope for the local run)
+- **Build/test/CI outputs and links:**
+  - docs/ai-sdlc/evidence/7107085_build_config.log
+  - docs/ai-sdlc/evidence/7107085_build_release.log
+  - docs/ai-sdlc/evidence/7107085_ctest_results.log
+  - docs/ai-sdlc/evidence/7107085_test_message_router_error.log
+  - docs/ai-sdlc/evidence/7107085_test_transport_retry_backoff.log
+  - docs/ai-sdlc/evidence/7107085_test_transport_stress.log
+  - docs/ai-sdlc/evidence/7107085_test_endtoend.log
+  - docs/ai-sdlc/evidence/7107085_server_app_stdout.log
+  - docs/ai-sdlc/evidence/7107085_client_app.log
+  - docs/ai-sdlc/evidence/7107085_tests_AI_missed.md
+- **Criterion → evidence mapping:**
+  - Issue-01: Tail Light example / feature scope — evidence captured by the example runtime logs and build output
+  - Issue-02: UDP timeout/retry behavior — evidence captured by the retry/backoff test PASS log
+  - Issue-03: concurrency / routing defect — evidence captured by stress/router test logs and the atomic state fix in examples/server_app.cpp
+  - linter/formatter clean — not independently verified in this environment; requirement remains to be checked if repo formatter/linter tooling is expected in the final review gate
+  - sanitizer/coverage — INCONCLUSIVE in current Windows environment; requires Linux/WSL or CI execution
+- **Security/review findings:**
+  - No security issue identified in the scoped patch.
+  - The fix remained narrow and aligned to the repo’s current design.
+  - The code is more reviewable because the change is limited to the remaining defect and does not broaden the API or architecture.
+- **Human decision and reviewer:**
+  - Reviewer sign-off is pending.
+  - Recommended next review action: confirm the local evidence and then require the Linux/WSL or CI sanitizer/coverage verification before final acceptance.
+- **Next stage and exact input handover:**
+  - Next stage: WBS-3.2 — Final verification / reviewer sign-off / toolchain-complete validation
+  - Exact handover inputs:
+    - this handover record
+    - the local evidence logs under docs/ai-sdlc/evidence/
+    - the final reviewer sign-off artifact
+    - Linux/WSL or CI sanitizer/coverage outputs if they are required for final acceptance
+- **Status:** `IMPLEMENTED`
+  - Caveat: Sanitizer and coverage verification are INCONCLUSIVE on this Windows environment and should be completed in Linux/WSL or CI before final acceptance.
+
+This handover is intentionally scoped to the evidence available at commit 7107085 and to the current Windows validation environment.
