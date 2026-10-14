@@ -26,14 +26,10 @@ MethodResult release_brake(const Payload&, const Endpoint&) {
 
 // Handler for querying brake status
 MethodResult brake_status(const Payload&, const Endpoint&) {
-    static std::atomic<bool> brake_pressed{true};
-    const bool new_state = !brake_pressed.load(std::memory_order_relaxed);
-    brake_pressed.store(new_state, std::memory_order_relaxed);
-
     std::cout << "[INFO] Server: Brake Status request received.\n";
     MethodResult result;
     result.return_code = ReturnCode::E_OK;  // Success
-    result.payload = {static_cast<uint8_t>(brake_pressed.load(std::memory_order_relaxed) ? 1u : 0u)};
+    result.payload = {1}; // Brake pressed
     return result;
 }
 
