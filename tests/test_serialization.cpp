@@ -8,7 +8,7 @@ int main() {
     SomeIpHeader h;
     h.service_id = 0xABCD;
     h.method_id = 0x1234;
-    h.length = SomeIpHeader::MIN_LENGTH + 5;
+    h.length = SomeIpHeader::SIZE + 5;
     h.client_id = 0x0010;
     h.session_id = 0x0020;
     h.protocol_version = 1;

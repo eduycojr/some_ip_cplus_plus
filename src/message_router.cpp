@@ -7,17 +7,23 @@ MessageRouter::MessageRouter(std::shared_ptr<UdpEndpoint> endpoint, ServiceRegis
     : endpoint_(std::move(endpoint)), registry_(registry) {}
 
 void MessageRouter::route(const SomeIpMessage& msg, const Endpoint& src, const Endpoint& dst, TransportProtocol proto) {
-    // Only handle REQUEST types for this minimal implementation
-    if (msg.header.message_type == static_cast<uint8_t>(MessageType::REQUEST)) {
-        auto handler_opt = registry_.find_handler(msg.header.service_id, msg.header.method_id);
-        if (!handler_opt) {
-            send_error(msg, ReturnCode::E_UNKNOWN, src);
+    switch (msg.header.message_type) {
+        case static_cast<uint8_t>(MessageType::REQUEST): {
+            auto handler_opt = registry_.find_handler(msg.header.service_id, msg.header.method_id);
+            if (!handler_opt) {
+                send_error(msg, ReturnCode::E_UNKNOWN, src);
+                return;
+            }
+            MethodResult res = (*handler_opt)(msg.payload, src);
+            send_response(msg, res, src);
             return;
         }
-        MethodResult res = (*handler_opt)(msg.payload, src);
-        send_response(msg, res, src);
-    } else {
-        // ignore other types for brevity
+        case static_cast<uint8_t>(MessageType::NOTIFICATION):
+        case static_cast<uint8_t>(MessageType::RESPONSE):
+        case static_cast<uint8_t>(MessageType::ERR):
+        default:
+            send_error(msg, ReturnCode::E_NOT_OK, src);
+            return;
     }
 }
 
@@ -31,10 +37,9 @@ void MessageRouter::send_response(const SomeIpMessage& request, const MethodResu
     h.interface_version = request.header.interface_version;
     h.message_type = static_cast<uint8_t>(MessageType::RESPONSE);
     h.return_code = static_cast<uint8_t>(result.return_code);
-    h.length = static_cast<Uint32>(result.payload.size() + SomeIpHeader::MIN_LENGTH);
+    h.length = static_cast<Uint32>(SomeIpHeader::SIZE + result.payload.size());
     SomeIpMessage resp{h, result.payload};
     Payload out = resp.serialize();
-    // Copy shared_ptr to avoid data-race with concurrent reset
     auto ep = endpoint_;
     if (ep) ep->send_to(out, dest);
 }
@@ -49,7 +54,7 @@ void MessageRouter::send_error(const SomeIpMessage& request, ReturnCode rc, cons
     h.interface_version = request.header.interface_version;
     h.message_type = static_cast<uint8_t>(MessageType::ERR); // Ensure canonical ERR (0x81)
     h.return_code = static_cast<uint8_t>(rc);
-    h.length = SomeIpHeader::MIN_LENGTH;
+    h.length = SomeIpHeader::SIZE;
     SomeIpMessage err{h, {}};
     Payload out = err.serialize();
     auto ep = endpoint_;
