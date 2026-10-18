@@ -20,7 +20,8 @@ struct SomeIpMessage {
         Payload header_bytes(data.begin(), data.begin() + SomeIpHeader::SIZE);
         SomeIpHeader h = SomeIpHeader::deserialize(header_bytes);
 
-        size_t p_len = h.length - SomeIpHeader::MIN_LENGTH;
+        if (h.length < SomeIpHeader::SIZE) throw std::runtime_error("message: invalid length");
+        size_t p_len = static_cast<size_t>(h.length - SomeIpHeader::SIZE);
         if (data.size() < SomeIpHeader::SIZE + p_len) throw std::runtime_error("message: payload short");
 
         SomeIpMessage msg;

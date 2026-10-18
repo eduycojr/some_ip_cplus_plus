@@ -65,9 +65,9 @@ static uint16_t find_free_port() {
 }
 
 static SomeIpMessage make_request_message(uint16_t service_id,
-                                         uint16_t method_id,
-                                         uint16_t client_id,
-                                         uint16_t session_id) {
+                                          uint16_t method_id,
+                                          uint16_t client_id,
+                                          uint16_t session_id) {
     SomeIpMessage msg{};
     msg.header.service_id = service_id;
     msg.header.method_id = method_id;
@@ -80,7 +80,18 @@ static SomeIpMessage make_request_message(uint16_t service_id,
 
     Payload payload = {0x10, 0x20, 0x30, 0x40};
     msg.payload = payload;
-    msg.header.length = static_cast<Uint32>(SomeIpHeader::MIN_LENGTH + msg.payload.size());
+    msg.header.length = static_cast<Uint32>(SomeIpHeader::SIZE + msg.payload.size());
+    return msg;
+}
+
+static SomeIpMessage make_notification_message(uint16_t service_id,
+                                              uint16_t method_id,
+                                              uint16_t client_id,
+                                              uint16_t session_id) {
+    SomeIpMessage msg = make_request_message(service_id, method_id, client_id, session_id);
+    msg.header.message_type = static_cast<uint8_t>(MessageType::NOTIFICATION);
+    msg.header.length = SomeIpHeader::SIZE;
+    msg.payload.clear();
     return msg;
 }
 
@@ -126,30 +137,62 @@ int main() {
         }
     }
 
-    sender->stop();
-
     const uint8_t actual_type = received_msg.header.message_type;
     const uint8_t actual_rc = received_msg.header.return_code;
-
-    std::printf("Received message type=0x%02X, return_code=0x%02X\n",
-                actual_type, actual_rc);
-
     if (actual_type != static_cast<uint8_t>(MessageType::ERR)) {
         std::fprintf(stderr,
-                     "ERROR: expected MessageType::ERR (0x%02X), got 0x%02X\n",
-                     static_cast<uint8_t>(MessageType::ERR),
-                     actual_type);
+                    "ERROR: expected MessageType::ERR (0x%02X), got 0x%02X\n",
+                    static_cast<uint8_t>(MessageType::ERR),
+                    actual_type);
+        sender->stop();
         return 3;
     }
-
     if (actual_rc != static_cast<uint8_t>(ReturnCode::E_UNKNOWN)) {
         std::fprintf(stderr,
-                     "ERROR: expected E_UNKNOWN (0x%02X), got 0x%02X\n",
-                     static_cast<uint8_t>(ReturnCode::E_UNKNOWN),
-                     actual_rc);
+                    "ERROR: expected E_UNKNOWN (0x%02X), got 0x%02X\n",
+                    static_cast<uint8_t>(ReturnCode::E_UNKNOWN),
+                    actual_rc);
+        sender->stop();
         return 4;
     }
 
-    std::puts("PASS: MessageRouter error path emits canonical MessageType::ERR = 0x81");
+    received = false;
+    received_msg = {};
+    SomeIpMessage notification = make_notification_message(0x1000, 0x0101, 0x0002, 0x0023);
+    router.route(notification, src, dst, TransportProtocol::UDP);
+
+    {
+        std::unique_lock<std::mutex> lock(m);
+        if (!cv.wait_for(lock, std::chrono::seconds(3), [&] { return received; })) {
+            std::fprintf(stderr, "Timed out waiting for unsupported message rejection\n");
+            sender->stop();
+            return 5;
+        }
+    }
+
+    sender->stop();
+
+    const uint8_t unsupported_type = received_msg.header.message_type;
+    const uint8_t unsupported_rc = received_msg.header.return_code;
+    std::printf("Received message type=0x%02X, return_code=0x%02X\n",
+                unsupported_type, unsupported_rc);
+
+    if (unsupported_type != static_cast<uint8_t>(MessageType::ERR)) {
+        std::fprintf(stderr,
+                    "ERROR: expected unsupported message to be rejected as ERR (0x%02X), got 0x%02X\n",
+                    static_cast<uint8_t>(MessageType::ERR),
+                    unsupported_type);
+        return 6;
+    }
+
+    if (unsupported_rc != static_cast<uint8_t>(ReturnCode::E_NOT_OK)) {
+        std::fprintf(stderr,
+                    "ERROR: expected E_NOT_OK (0x%02X), got 0x%02X\n",
+                    static_cast<uint8_t>(ReturnCode::E_NOT_OK),
+                    unsupported_rc);
+        return 7;
+    }
+
+    std::puts("PASS: MessageRouter rejects unsupported and unknown requests with canonical ERR responses");
     return 0;
 }

@@ -7,11 +7,11 @@
 
 namespace someip {
 
-// SOME/IP header: 16 bytes
+// SOME/IP header: 16 bytes. The length field counts the payload plus the 16-byte header.
 struct SomeIpHeader {
     Uint16 service_id;
     Uint16 method_id;
-    Uint32 length; // length of payload + 8
+    Uint32 length; // length of payload + 16-byte header
     Uint16 client_id;
     Uint16 session_id;
     Uint8 protocol_version;
@@ -20,7 +20,7 @@ struct SomeIpHeader {
     Uint8 return_code;
 
     static constexpr size_t SIZE = 16;
-    static constexpr Uint32 MIN_LENGTH = 8;
+    static constexpr Uint32 MIN_LENGTH = SIZE;
 
     Payload serialize() const {
         SerializationBuffer buf;
@@ -49,7 +49,7 @@ struct SomeIpHeader {
         h.interface_version = db.read_uint8();
         h.message_type = db.read_uint8();
         h.return_code = db.read_uint8();
-        if (h.length < MIN_LENGTH) throw std::runtime_error("header: length < 8");
+        if (h.length < MIN_LENGTH) throw std::runtime_error("header: length < 16");
         return h;
     }
 
