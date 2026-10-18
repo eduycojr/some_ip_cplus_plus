@@ -1,0 +1,101 @@
+ .github/copilot-instructions.md                    |  24 +
+ CMakeLists.txt                                     |  64 ++-
+ docs/ai-sdlc/HANDOVER_RECORD_TEMPLATE.md           |  24 +
+ docs/ai-sdlc/MP1_charter.md                        |  84 +++
+ docs/ai-sdlc/PROMPT_ROUTER.md                      |  33 ++
+ docs/ai-sdlc/SESSION_START_PROMPT.md               |  27 +
+ docs/ai-sdlc/WORKFLOW_MODEL_v1.md                  |  55 ++
+ ...ai_assisted_software_architecture_sdlc_guide.md | 281 +++++++++
+ .../checklists/WBS-3.3_AI_code_review_checklist.md | 104 ++++
+ docs/ai-sdlc/evidence/Plan_v1_challenge_log.md     |  62 ++
+ .../W2-2.2_Requirement_Decomposition_Examples.md   | 632 +++++++++++++++++++++
+ docs/ai-sdlc/evidence/W2_learning_loops.md         |  87 +++
+ docs/ai-sdlc/evidence/W2_telemetry_WBS-2.8.md      |  42 ++
+ docs/ai-sdlc/evidence/WBS-3.2_repo_evidence.md     |  63 ++
+ docs/ai-sdlc/evidence/build_7dc93b7.log            | Bin 0 -> 1124 bytes
+ docs/ai-sdlc/evidence/build_967d268.log            |  19 +
+ docs/ai-sdlc/evidence/build_f09cd2f.log            | Bin 0 -> 964 bytes
+ docs/ai-sdlc/evidence/git_status_7dc93b7.txt       | Bin 0 -> 1952 bytes
+ docs/ai-sdlc/evidence/git_status_967d268.txt       |   7 +
+ docs/ai-sdlc/evidence/git_status_f09cd2f.txt       | Bin 0 -> 2358 bytes
+ .../logs/wbs-2.7_test_message_router_error.log     |   3 +
+ .../logs/wbs-2.7_test_transport_retry_backoff.log  |   2 +
+ .../logs/wbs-2.7_test_transport_stress.log         |   3 +
+ docs/ai-sdlc/evidence/taillight_client_7dc93b7.log |   2 +
+ docs/ai-sdlc/evidence/taillight_client_f09cd2f.log | Bin 0 -> 932 bytes
+ docs/ai-sdlc/evidence/taillight_server_7dc93b7.log |   2 +
+ docs/ai-sdlc/evidence/taillight_server_f09cd2f.log | Bin 0 -> 220 bytes
+ .../ai-sdlc/evidence/taillight_tshark_f09cd2f.pcap | Bin 0 -> 472 bytes
+ docs/ai-sdlc/evidence/tests_7dc93b7.log            | Bin 0 -> 1330 bytes
+ docs/ai-sdlc/evidence/tests_967d268.log            |  15 +
+ docs/ai-sdlc/evidence/tests_f09cd2f.log            | Bin 0 -> 1330 bytes
+ .../evidence/wbs-2.7_coverage-report.tar.gz        | Bin 0 -> 30282 bytes
+ .../ai-sdlc/evidence/wbs-2.7_coverage.changed.info | 188 ++++++
+ .../evidence/wbs-2.7_coverage.filtered.info        | 603 ++++++++++++++++++++
+ .../evidence/wbs-2.7_coverage_changed_summary.txt  |   7 +
+ docs/ai-sdlc/evidences/7107085_stderr.log          |   0
+ docs/ai-sdlc/evidences/7107085_stdout.log          |   1 +
+ docs/ai-sdlc/handovers/WBS-2.2_approval_draft.md   |  42 ++
+ docs/ai-sdlc/handovers/WBS-2.2_to_WBS-2.3.md       |  56 ++
+ .../handovers/WBS-2.3_execution_evidence.md        |  51 ++
+ docs/ai-sdlc/handovers/WBS-2.3_to_WBS-2.4.md       | 311 ++++++++++
+ docs/ai-sdlc/handovers/WBS-2.4_to_WBS-2.5.md       |  45 ++
+ docs/ai-sdlc/handovers/WBS-2.5_kickoff_approval.md |  30 +
+ docs/ai-sdlc/handovers/WBS-2.5_to_WBS-2.6.md       | 434 ++++++++++++++
+ docs/ai-sdlc/handovers/WBS-2.6_to_WBS-2.7.md       | 203 +++++++
+ docs/ai-sdlc/handovers/WBS-2.7_to_WBS-2.8.md       | 138 +++++
+ docs/ai-sdlc/handovers/WBS-2.8_signoff.yaml        |  17 +
+ docs/ai-sdlc/handovers/WBS-2.8_to_WBS-2.9.md       | 117 ++++
+ docs/ai-sdlc/handovers/WBS-3.1_summary.md          |  93 +++
+ docs/ai-sdlc/handovers/WBS-3.2_handover_record.md  | 112 ++++
+ docs/ai-sdlc/handovers/WBS-3.2_summary.md          | 195 +++++++
+ docs/ai-sdlc/handovers/WBS-3.3_handover_record.md  | 138 +++++
+ docs/ai-sdlc/manifest.yaml                         |  41 ++
+ docs/ai-sdlc/plans/Plan_v1.md                      | 135 +++++
+ docs/ai-sdlc/plans/Plan_v2.md                      |  61 ++
+ .../01_requirements_clarification.md               |  44 ++
+ .../prompt-library/02_requirement_decomposition.md |  43 ++
+ .../prompt-library/03_repository_exploration.md    |  43 ++
+ .../prompt-library/04_design_alternatives.md       |  43 ++
+ .../prompt-library/05_implementation_plan.md       |  42 ++
+ .../prompt-library/06_minimal_code_change.md       |  43 ++
+ .../prompt-library/07_debugging_hypotheses.md      |  43 ++
+ docs/ai-sdlc/prompt-library/08_unit_test_design.md |  43 ++
+ .../prompt-library/09_test_failure_analysis.md     |  43 ++
+ docs/ai-sdlc/prompt-library/10_code_review.md      |  42 ++
+ .../prompt-library/11_security_safe_use_review.md  |  42 ++
+ .../12_documentation_change_notes.md               |  44 ++
+ .../prompt-library/13_refactoring_safety_check.md  |  44 ++
+ .../14_tool_output_schema_validation.md            |  44 ++
+ .../15_evidence_first_technical_claim.md           |  41 ++
+ .../16_prompt_output_quality_evaluator.md          |  43 ++
+ .../prompt-library/17_multi_turn_planning_gate.md  |  43 ++
+ .../18_tool_schema_payload_generation.md           |  43 ++
+ docs/ai-sdlc/prompt-library/test_file_only.md      |   1 +
+ docs/ai-sdlc/stage-prompts/01_requirement.md       |  45 ++
+ docs/ai-sdlc/stage-prompts/02_decomposition.md     |  45 ++
+ docs/ai-sdlc/stage-prompts/03_repo-exploration.md  |  45 ++
+ docs/ai-sdlc/stage-prompts/04_plan.md              |  45 ++
+ docs/ai-sdlc/stage-prompts/05_plan-critique.md     |  45 ++
+ docs/ai-sdlc/stage-prompts/06_implement.md         |  45 ++
+ docs/ai-sdlc/stage-prompts/07_test-generation.md   |  45 ++
+ docs/ai-sdlc/stage-prompts/08_debug.md             |  45 ++
+ docs/ai-sdlc/stage-prompts/09_human-review.md      |  45 ++
+ docs/ai-sdlc/stage-prompts/10_verify.md            |  45 ++
+ docs/ai-sdlc/stage-prompts/11_document-maintain.md |  45 ++
+ docs/ai-sdlc/stage-prompts/test_file_only          |   1 +
+ docs/ai-sdlc/telemetry/mp1_task_map.yaml           |  21 +
+ docs/ai-sdlc/templates/session-closure.md          |  36 ++
+ docs/ai-sdlc/templates/session-startup.md          |  31 +
+ examples/server_app.cpp                            |  10 +-
+ examples/taillight_client_app.cpp                  |  43 ++
+ examples/taillight_server_app.cpp                  |  26 +
+ include/someip/transport.hpp                       |   4 +-
+ include/someip/types.hpp                           |   4 +-
+ src/message_router.cpp                             |  11 +-
+ src/transport.cpp                                  | 167 ++++--
+ tests/test_endtoend.cpp                            |  35 +-
+ tests/test_message_router_error.cpp                | 155 +++++
+ tests/test_transport_retry_backoff.cpp             | 111 ++++
+ tests/test_transport_stress.cpp                    | 155 +++++
+ 100 files changed, 6663 insertions(+), 69 deletions(-)
