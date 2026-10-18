@@ -1,0 +1,3 @@
+Received message type=0x81, return_code=0xFF
+PASS: MessageRouter error path emits canonical MessageType::ERR = 0x81
+exit=0

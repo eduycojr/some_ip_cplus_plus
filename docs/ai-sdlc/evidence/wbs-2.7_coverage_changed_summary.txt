@@ -1,0 +1,7 @@
+Reading tracefile coverage.changed.info.
+Summary coverage rate:
+  source files: 2
+  lines.......: 69.3% (104 of 150 lines)
+  functions...: 75.0% (9 of 12 functions)
+Message summary:
+  no messages were reported

@@ -1,0 +1,3 @@
+Stress test summary: clients=2 sends_per_client=8 received=16
+PASS: multi-client stress test completed without crash and received messages
+exit=0
