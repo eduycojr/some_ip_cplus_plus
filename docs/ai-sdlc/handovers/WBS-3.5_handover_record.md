@@ -1,0 +1,83 @@
+# AI-assisted SDLC Handover Record — WBS-3.5
+
+- **WBS/task ID:** WBS-3.5
+- **Stage number/name:** 11 — Document / maintain
+- **Prompt IDs and prompt versions:** P12 (document/maintain), P15 (verify); prompt templates referenced from docs/ai-sdlc/PROMPT_ROUTER.md and prompt-library when applicable.
+- **Repository / branch / commit SHA:** repo: eduycojr/some_ip_cplus_plus
+  - docs branch: docs/wbs_3.5_docs
+  - commit: d66e0f20239961f7c4403b4039c4bfe456e3330e
+- **Input artifact paths/issue links:**
+  - include/someip/someip_header.hpp
+  - include/someip/someip_message.hpp
+  - include/someip/service.hpp
+  - include/someip/message_router.hpp
+  - include/someip/types.hpp
+  - src/message_router.cpp
+  - tests/test_serialization.cpp
+  - tests/test_message_router_error.cpp
+  - readme.md
+  - docs/ai-sdlc/WORKFLOW_MODEL_v1.md
+  - docs/ai-sdlc/PROMPT_ROUTER.md
+  - docs/ai-sdlc/HANDOVER_RECORD_TEMPLATE.md
+- **Inputs supplied:**
+  - Human confirmation to proceed with WBS-3.5 docs on branch docs/wbs_3.5_docs
+  - Repository source code and tests used as evidence
+  - Workflow acceptance criteria for WBS-3.5 (100% statement verification)
+- **Confirmed facts (with evidence):**
+  - Verified API documentation files were created and committed to branch docs/wbs_3.5_docs:
+    - docs/api/someip_header.md
+    - docs/api/someip_message.md
+    - docs/api/service_registry.md
+    - docs/api/message_router.md
+    - docs/api/types.md
+  - Verification artifacts committed:
+    - docs/ai-sdlc/change-notes/WBS-3.5_change_note.md
+    - docs/ai-sdlc/WBS-3.5_verification_checklist.md
+  - Commit SHA containing the docs and checklist: d66e0f20239961f7c4403b4039c4bfe456e3330e (see branch docs/wbs_3.5_docs)
+  - Key implementation facts verified and cited in the documentation:
+    - SomeIpHeader SIZE = 16 and MIN_LENGTH = 8 (include/someip/someip_header.hpp:10-23,52)
+    - SomeIpMessage deserialization and payload-length calculation (include/someip/someip_message.hpp:18-29)
+    - MessageRouter handles REQUEST messages and emits ERR/E_UNKNOWN for unknown handlers (src/message_router.cpp:9-19,42-56)
+    - Tests validate serialization and canonical error path (tests/test_serialization.cpp, tests/test_message_router_error.cpp)
+- **Inferences / assumptions:**
+  - The documentation statements that reference runtime behavior (for example, exact console output formatting) are based on code and tests; however, no fresh runtime logs were generated in this session. Such runtime-dependent claims are annotated in the verification checklist.
+  - The docs are generated from source and do not modify implementation.
+- **Unknowns / blockers:**
+  - The PR from docs/wbs_3.5_docs → ai-assisted-sdlc has not been created by the assistant; a human must open the PR or approve creation.
+  - No CI/build/test logs were executed or attached in this session — if required by reviewers, the human should run the recommended build/test steps and attach the evidence (pr_evidence.zip).
+  - The Stage 5 plan-critique adapter file `stage-prompts/05_plan_critique.md` is referenced by workflow docs but not present in the repository (recorded earlier as an unresolved workflow artifact).
+- **AI output / proposed artifacts:**
+  - Documentation files (docs/api/ ...)
+  - Change note and verification checklist
+  - Draft PR body and suggested gh command to create the PR
+- **Files/diff affected (actual vs proposed):**
+  - Added documentation-only files under docs/api/ and docs/ai-sdlc/change-notes/
+  - No source code files were modified in this handover commit
+- **Commands actually executed / environment:**
+  - Created branch docs/wbs_3.5_docs (off ai-assisted-sdlc) via GitHub API
+  - Pushed documentation files in a single commit to docs/wbs_3.5_docs
+  - No local shell or CI commands executed by the assistant
+- **Build/test/CI outputs and links:**
+  - Not produced by assistant. Recommended human actions to produce evidence (PowerShell/CMake/ctest) are included in PR draft and change-note.
+- **Criterion → evidence mapping:**
+  - Acceptance criterion: 100% of generated statements verified — mapped in docs/ai-sdlc/WBS-3.5_verification_checklist.md
+  - Documentation present in docs/api/ and change-note present in docs/ai-sdlc/change-notes/
+  - PR merge into ai-assisted-sdlc remains the final acceptance gate
+- **Security/review findings:**
+  - No new code or dependencies were introduced by these docs commits.
+  - Documentation clarifies that the implementation is minimal and does not represent a full SOME/IP stack; reviewers should check for any claims that imply broader behavior.
+- **Human decision and reviewer:**
+  - Reviewer(s): repository maintainers / ai-assisted-sdlc reviewers to be added when PR created
+  - Human actions required: open PR, run optional verification scripts, attach logs, perform review, merge when satisfied
+- **Next stage and exact input handover:**
+  - Next stage: Stage 9 Human review (actual PR review) followed by Stage 10 Verify (attach build/test evidence if required) and Stage 11 Document/maintain (mark ACCEPTED)
+  - Exact inputs for next stage: PR URL, commit SHA d66e0f20239961f7c4403b4039c4bfe456e3330e, verification checklist file path, optional pr_evidence.zip containing runtime logs
+- **Status:** IMPLEMENTED / WAITING_FOR_VERIFICATION
+  - Rationale: documentation and verification checklist were generated and committed; final verification (CI/logs/PR approval/merge) is pending human actions.
+
+---
+
+Notes and references:
+- Handover source template: docs/ai-sdlc/HANDOVER_RECORD_TEMPLATE.md
+- Workflow model: docs/ai-sdlc/WORKFLOW_MODEL_v1.md
+- Prompt router: docs/ai-sdlc/PROMPT_ROUTER.md
