@@ -1,6 +1,6 @@
 manifest_version: 1
 project: some_ip_cplus_plus
-last_updated: 2026-10-13T13:05:00Z
+last_updated: 2026-10-18T00:00:00Z
 artifacts:
   - id: w2_2_requirement_decomp
     path: docs/ai-sdlc/evidence/W2-2.2_Requirement_Decomposition_Examples.md
@@ -19,9 +19,9 @@ artifacts:
     approver: null
   - id: wbs_2_5_mp1_charter
     path: docs/ai-sdlc/MP1_charter.md
-    commit: null
-    status: waiting_for_approval
-    approver: null
+    commit: pending_current_commit
+    status: approved_with_limitations
+    approver: '@eduycojr'
   - id: wbs_2_6_handover
     path: docs/ai-sdlc/handovers/WBS-2.6_to_WBS-2.7.md
     commit: 4756711feb06a6f5af5e5cce26076672b3136463

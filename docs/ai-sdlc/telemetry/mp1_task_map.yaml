@@ -4,18 +4,59 @@
 - mp1_task: WBS-2.5-DESIGN
   pr: null
   commit_start: null
+  commit_done: b36b07b9280ba4bfa1717cbb13fbf08af93cd8c5
+  session_id: S20261013-MP1-01
+  start_event: charter_recorded
+  done_event: kickoff_approval_recorded
+  owner: '@eduycojr'
+  manual_baseline_hours: 14
+  actual_hours: null
+  baseline_type: retrospective
+
+- mp1_task: WBS-2.6-IMPLEMENT
+  pr: null
+  commit_start: null
   commit_done: null
-  session_id: S20261011-W2-01
-  start_event: session_start
+  session_id: S1-W2-WBS2.6-01
+  start_event: implementation_start
   done_event: handover_commit
   owner: '@eduycojr'
+  manual_baseline_hours: 32
+  actual_hours: null
+  baseline_type: forward_looking
 
-# Example template entry:
-# - mp1_task: WBS-2.6-IMPLEMENT
-#   pr: 42
-#   commit_start: f11a543...
-#   commit_done: c2475f1...
-#   session_id: S20261012-W2-01
-#   start_event: PR_opened
-#   done_event: handover_commit
-#   owner: '@owner'
+- mp1_task: WBS-2.7-VERIFY
+  pr: null
+  commit_start: null
+  commit_done: null
+  session_id: S1-W2-WBS2.7-01
+  start_event: verification_start
+  done_event: handover_commit
+  owner: '@eduycojr'
+  manual_baseline_hours: 10
+  actual_hours: null
+  baseline_type: forward_looking
+
+- mp1_task: WBS-3.1-HARDEN
+  pr: null
+  commit_start: null
+  commit_done: null
+  session_id: S1-W3-WBS3.1-01
+  start_event: hardening_start
+  done_event: handover_commit
+  owner: '@eduycojr'
+  manual_baseline_hours: 32
+  actual_hours: null
+  baseline_type: forward_looking
+
+- mp1_task: WBS-3.X-DOCS
+  pr: null
+  commit_start: null
+  commit_done: null
+  session_id: S1-W3-WBS3.X-01
+  start_event: documentation_start
+  done_event: completion_report_commit
+  owner: '@eduycojr'
+  manual_baseline_hours: 4
+  actual_hours: null
+  baseline_type: forward_looking
