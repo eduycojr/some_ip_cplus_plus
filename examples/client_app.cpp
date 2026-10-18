@@ -1,4 +1,5 @@
 
+
 #include <chrono>
 #include <thread>
 #include <iostream>
@@ -17,7 +18,7 @@ bool send_brake_request(std::shared_ptr<UdpEndpoint> client, const std::string& 
     h.method_id = press ? 0x0010 : 0x0020;  // Press (0x0010) or Release (0x0020)
     h.client_id = 0x01;               // Client ID
     h.session_id = 0x01;              // Session ID
-    h.length = 8;                     // Header only (payload not needed)
+    h.length = SomeIpHeader::SIZE;    // Header only (payload not needed)
     h.protocol_version = 1;
     h.interface_version = 1;
     h.message_type = static_cast<uint8_t>(MessageType::REQUEST);
@@ -35,7 +36,7 @@ bool request_brake_status(std::shared_ptr<UdpEndpoint> client, const std::string
     h.method_id = 0x0030;            // Brake status method ID
     h.client_id = 0x01;              // Client ID
     h.session_id = 0x01;             // Session ID
-    h.length = 8;                    // Header only (payload not needed)
+    h.length = SomeIpHeader::SIZE;   // Header only (payload not needed)
     h.protocol_version = 1;
     h.interface_version = 1;
     h.message_type = static_cast<uint8_t>(MessageType::REQUEST);
