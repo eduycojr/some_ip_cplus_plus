@@ -1,9 +1,9 @@
 <!-- BEGIN WBS-2.1 AI-SDLC WORKFLOW ADAPTER -->
 ## AI-assisted SDLC workflow
 
-When working in this repository, use `docs/ai-sdlc/WORKFLOW_MODEL_v1.md` as the canonical process and `docs/ai-sdlc/PROMPT_ROUTER.md` to choose the smallest applicable prompt set. The 11 stages, in order, are: (1) Requirement — P01; (2) Decomposition — P02; (3) Repository exploration — P03/P15; (4) Plan — P05, with P04/P17 only when useful; (5) Adversarial plan critique — `docs/ai-sdlc/stage-prompts/05_plan-critique.md`; (6) Implement — P06; (7) Test generation — P08; (8) Debug — P07/P09; (9) Human review — P10 and P11 when relevant; (10) Verify — actual execution evidence plus P14/P15 when relevant; (11) Document/maintain — P12/P13. P16 is a cross-stage evaluator, not a workflow stage; P18 applies to structured tool payloads when required.
+When working in this repository, use `docs/ai-sdlc/WORKFLOW_MODEL_v1.md` as the canonical process and `docs/ai-sdlc/PROMPT_ROUTER.md` to choose the smallest applicable prompt set. The 11 stages, in order, are: (1) Requirement — P01; (2) Decomposition — P02; (3) Repository exploration — P03/P15; (4) Plan — P05, with P04/P17 only when useful; (5) Adversarial plan critique — `docs/ai-sdlc/stage-prompts/05_plan_critique.md`; (6) Implement — P06; (7) Test generation — P08; (8) Debug — P07/P09; (9) Human review — P10 and P11 when relevant; (10) Verify — actual execution evidence plus P14/P15 when relevant; (11) Document/maintain — P12/P13. P16 is a cross-stage evaluator, not a workflow stage; P18 applies to structured tool payloads when required.
 
-The detailed WBS 1.4 prompt templates are in `docs/ai-sdlc/prompt-library/prompts/`. On GitHub.com Copilot Chat, these Markdown files are reference material; do not assume they are automatically invoked as IDE prompt files. Ask for or use the relevant prompt by path and copy its template into the conversation when retrieval is uncertain.
+The detailed WBS 1.4 prompt templates are in `docs/ai-sdlc/prompt-library`. On GitHub.com Copilot Chat, these Markdown files are reference material; do not assume they are automatically invoked as IDE prompt files. Ask for or use the relevant prompt by path and copy its template into the conversation when retrieval is uncertain.
 
 ### Non-negotiable operating rules
 - Treat repository context as evidence to inspect, not proof that every file or dependency has been examined. Cite repository paths, symbols, and excerpts for material claims.
@@ -15,7 +15,7 @@ The detailed WBS 1.4 prompt templates are in `docs/ai-sdlc/prompt-library/prompt
 - Preserve existing architecture and APIs unless the approved requirement explicitly authorizes change. Prefer the smallest reversible change and include regression coverage.
 - At each stage state: stage number/name; prompt ID(s) used; inputs/evidence inspected; output; assumptions/unknowns; verification needed; stop/exit decision; and a concise handover for the next stage.
 - Carry forward approved requirements, constraints, file references, test results, unresolved items, and commit SHA explicitly. Do not assume a new chat or model has prior chat context.
-- Apply security/data-handling rules from `docs/ai-sdlc/prompt-library/prompts/11_security_safe_use_review.md` and any actual approved policy supplied by the user. A training draft is not approved company policy.
+- Apply security/data-handling rules from `docs/ai-sdlc/prompt-library/11_security_safe_use_review.md` and any actual approved policy supplied by the user. A training draft is not approved company policy.
 - Use the 11 stages in the canonical workflow in order. A stage may be `N/A` only with a task-specific reason. Conditional specialist prompts are not mandatory on every task.
 - Log an AI/process failure as a learning loop only when observed behavior, evidence, plausible cause, method change, retest, measure, and reuse status are distinguishable. Keep untested loops open.
 
